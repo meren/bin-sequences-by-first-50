@@ -40,6 +40,9 @@ while input.next():
     if limit and input.pos > limit:
         break
 
+    # these nested ifs are for optimization purposes. it could be done in one line,
+    # but the performance is around 200 times better when 2 levels of separation is
+    # in place.
     if bins_dict.has_key(input.seq[0:5]):
         if bins_dict[input.seq[0:5]].has_key(input.seq[5:10]):
             if input.seq[0:50] in bins_dict[input.seq[0:5]][input.seq[5:10]]:
