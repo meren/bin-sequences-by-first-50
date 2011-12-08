@@ -1,4 +1,4 @@
-This little tool takes a `FASTA file path` as an argument and creates bins of reads, in respect to the first 50 characters of them, that makes it possible to answer some quesitons such as _'what is the number of sequences that have the same first 50 nucleotides'_. If the file contains shotgun metagenomic reads, the mean number of sequences that share the same first 50 nucleotides in each bin would expected to be very small.
+This little tool takes a `FASTA file path` as an argument and creates bins of reads, in respect to the first 50 nucleotides of them, that makes it possible to answer some quesitons such as _'what is the number of sequences that have the same first 50 nucleotides'_. If the file contains shotgun metagenomic reads, the mean number of reads that share the _same_ first 50 nucleotides in each bin would expected to be very small.
 
 After obtaining files in this directory, it could be run as follows:
 
