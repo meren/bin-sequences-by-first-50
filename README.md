@@ -4,6 +4,8 @@ After obtaining files in this directory, it could be run as follows:
 
      python bin_based_on_first_50.py /path/to/fasta.fa
 
+By default, the code only analyses the first 10,000,000 reads in the file. Limit can be changed by editing `limit` variable `bin_based_on_first_50.py`.
+
 An example output should look like this:
 
      meren ~ $ python bin_based_on_first_50.py HMP2102M.fasta
