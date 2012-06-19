@@ -7,7 +7,7 @@ import fastalib as u
 
 # change this to a larger number to analyze more sequences,
 # put 0 to analyze all sequences in a given file
-limit = 9999999
+limit = 0
 
 bins_dict = {}
 binned_sequence_counts = []
@@ -69,6 +69,7 @@ binned_sequence_counts.sort(reverse = True)
 total_number_of_sequences_taken_into_account = input.pos - number_of_sequences_that_were_shorter_than_50
 maximum_number_of_sequence_in_one_bin = max(binned_sequence_counts)
 number_of_bins_with_only_one_sequence = len([t for t in binned_sequence_counts if t == 1])
+number_of_bins_with_twenty_or_more_sequences = len([t for t in binned_sequence_counts if t >= 20])
 
 sys.stderr.write('\nDone.\n\nResults:\n')
 
@@ -78,6 +79,9 @@ print 'Number of sequences that were shorter than 50   : ', pp(number_of_sequenc
 print 'Number of sequences that were taken into account: ', pp(total_number_of_sequences_taken_into_account)
 print 'Number of bins based on first 50 bases          : ', pp(len(binned_sequence_counts))
 print 'Number of bins with only one sequence           :  %s (%.2f%% of all bins)'\
+                    % (pp(number_of_bins_with_only_one_sequence),
+                       number_of_bins_with_only_one_sequence * 100.0 / len(binned_sequence_counts))
+print 'Number of bins with 20 and more sequences       :  %s (%.2f%% of all bins)'\
                     % (pp(number_of_bins_with_only_one_sequence),
                        number_of_bins_with_only_one_sequence * 100.0 / len(binned_sequence_counts))
 print 'Mean number of sequences in each bin            : ', numpy.mean(binned_sequence_counts)
