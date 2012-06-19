@@ -13,7 +13,8 @@ bins_dict = {}
 binned_sequence_counts = []
 
 input = u.SequenceSource(sys.argv[1])
-output = open('unique_first_50s', 'w')
+output_file_path = sys.argv[1] + '.unique_first_50s'
+output = open(output_file_path, 'w')
 
 number_of_sequences_that_were_shorter_than_50 = 0
 
@@ -82,12 +83,12 @@ print 'Number of bins with only one sequence           :  %s (%.2f%% of all bins
                     % (pp(number_of_bins_with_only_one_sequence),
                        number_of_bins_with_only_one_sequence * 100.0 / len(binned_sequence_counts))
 print 'Number of bins with 20 and more sequences       :  %s (%.2f%% of all bins)'\
-                    % (pp(number_of_bins_with_only_one_sequence),
-                       number_of_bins_with_only_one_sequence * 100.0 / len(binned_sequence_counts))
+                    % (pp(number_of_bins_with_twenty_or_more_sequences),
+                       number_of_bins_with_twenty_or_more_sequences * 100.0 / len(binned_sequence_counts))
 print 'Mean number of sequences in each bin            : ', numpy.mean(binned_sequence_counts)
 print 'Standard deviation                              : ', numpy.std(binned_sequence_counts)
 print 'Maximum number of sequence in one bin           :  %s (%f%% of all sequences)'\
                     % (pp(maximum_number_of_sequence_in_one_bin),
                        maximum_number_of_sequence_in_one_bin * 100.0 / total_number_of_sequences_taken_into_account)
 print
-print '(unique first 50 nucleotides and their counts are stored in ./unique_first_50s)'
+print '(unique first 50 nucleotides and their counts are stored in "%s")' % output_file_path
