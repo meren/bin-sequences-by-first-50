@@ -1,4 +1,14 @@
-This little tool takes a `FASTA file path` as an argument and creates bins of reads, in respect to the first 50 nucleotides of them, that makes it possible to answer some quesitons such as _'what is the number of sequences that have the same first 50 nucleotides'_. If the file contains shotgun metagenomic reads, the mean number of reads that share the _same_ first 50 nucleotides in each bin would expected to be very small.
+In this small repository there are two scripts:
+
+* `bin_based_on_first_50.py`
+* `screen_bins_for_complexity.py`
+
+
+## bin_based_on_first_50.py
+
+`bin_based_on_first_50.py` takes a FASTA file path as an argument and creates bins of reads, in respect to the first 50 nucleotides of them, which makes it possible to answer the question _'what is the number of sequences that have the same first 50 nucleotides'_.
+
+If the FASTA file contains shotgun metagenomic reads, the mean number of reads that share the _same_ first 50 nucleotides in each bin would expected to be very small. If you have large bins, it might indicate adapter contamination or other problems.
 
 After obtaining files in this directory, it could be run as follows:
 
@@ -42,5 +52,26 @@ And this is the output file that was mentioned above:
      1   GCGTTGCCCGTTGCAATCATGGGCACCACGCAGATGGACTCAATCCTGCT
 
 
+
+## screen_bins_for_complexity.py
+
+The second script is `screen_bins_for_complexity.py` which takes the output of the previous script as an input, and quantifies the uncertainty associated with the identified 50 nt bins to give an idea about the complexity of a bin. Due to the nature of the analysis, reads with repetitive regions or with homopolymer characteristics will result in very low entropy. It can be run simply like this:
+
+     meren ~ $ python screen_bins_for_complexity.py ./unique_first_50s
+     Computing entropy for bins: \
+     Output file is ready: ./unique_first_50s.entropy
+
+And following is an example output file:
+
+     meren ~ $ tail ./unique_first_50s.entropy
+     1.987525   TAGGCGTAAAGCGCACGCAGGCGTTTGTTAAGTCAGATGTGAAATCCCCG
+     1.987525   TAGGCGTAAAGCGCACGCAGGCGGTTTGTTAAGTCAGATGTGAAATCCCC
+     1.987525   TAGGACGTAAGCGCACGCAGGCGTTTGTTAAGTCAGATGTGAAATCCCCG
+     1.981315   TAGGCGTAAAGCGCACGCAGGCGGTTTGTTAAGTCAGGTGTGAAATCCCC
+     1.846562   TAGGCGTAAAGAGGGAGCAGGCGGCAGCAAGGGTCTGTGGTGAAAGCCTG
+     1.409800   AAAAAAAAAAAAAAAAAAAAAAAAAAAGTTAAGTCAGATGTGAAATCCCC
+     1.168141   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATCAGATGTGAAATCCCC
+     0.874310   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGTGAAATCCCC
+     0.541188   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATCCCC
 
 You can send your remarks to meren / mbl.edu.
