@@ -12,7 +12,7 @@ limit = 0
 bins_dict = {}
 binned_sequence_counts = []
 
-input = u.SequenceSource(sys.argv[1])
+input_fasta = u.SequenceSource(sys.argv[1])
 output_file_path = sys.argv[1] + '.unique_first_50s'
 output = open(output_file_path, 'w')
 
@@ -29,31 +29,29 @@ def pp(n):
     ret.reverse()
     return ''.join(ret[1:]) if ret[0] == ',' else ''.join(ret)
 
-while input.next():
-    if input.pos % 10000 == 0 or input.pos == 1:
-        sys.stderr.write('\rApproximate number of entries that have been processed so far: ~%s' % (pp(input.pos)))
+while input_fasta.next():
+    if input_fasta.pos % 10000 == 0 or input_fasta.pos == 1:
+        sys.stderr.write('\rApproximate number of entries that have been processed so far: ~%s' % (pp(input_fasta.pos)))
         sys.stderr.flush() 
     
-    if len(input.seq) < 50:
+    if len(input_fasta.seq) < 50:
         number_of_sequences_that_were_shorter_than_50 += 1
         continue
 
-    if limit and input.pos > limit:
+    if limit and input_fasta.pos > limit:
         break
 
-    # these nested ifs are for optimization purposes. it could be done in one line,
-    # but the performance is around 200 times better when 2 levels of separation is
-    # in place.
-    if bins_dict.has_key(input.seq[0:5]):
-        if bins_dict[input.seq[0:5]].has_key(input.seq[5:10]):
-            if input.seq[0:50] in bins_dict[input.seq[0:5]][input.seq[5:10]]:
-                bins_dict[input.seq[0:5]][input.seq[5:10]][input.seq[0:50]] += 1
+    # sorry about the nested ifs.
+    if bins_dict.has_key(input_fasta.seq[0:5]):
+        if bins_dict[input_fasta.seq[0:5]].has_key(input_fasta.seq[5:10]):
+            if input_fasta.seq[0:50] in bins_dict[input_fasta.seq[0:5]][input_fasta.seq[5:10]]:
+                bins_dict[input_fasta.seq[0:5]][input_fasta.seq[5:10]][input_fasta.seq[0:50]] += 1
             else:
-                bins_dict[input.seq[0:5]][input.seq[5:10]][input.seq[0:50]] = 1
+                bins_dict[input_fasta.seq[0:5]][input_fasta.seq[5:10]][input_fasta.seq[0:50]] = 1
         else:
-            bins_dict[input.seq[0:5]][input.seq[5:10]] = {input.seq[0:50]: 1}
+            bins_dict[input_fasta.seq[0:5]][input_fasta.seq[5:10]] = {input_fasta.seq[0:50]: 1}
     else:
-        bins_dict[input.seq[0:5]] = {input.seq[5:10]: {input.seq[0:50]: 1}}
+        bins_dict[input_fasta.seq[0:5]] = {input_fasta.seq[5:10]: {input_fasta.seq[0:50]: 1}}
 
 sys.stderr.write('\n')
 
@@ -66,8 +64,9 @@ for k1 in bins_dict:
             output.write('%d\t%s\n' % (bins_dict[k1][k2][unique_fifty], unique_fifty))
             binned_sequence_counts.append(bins_dict[k1][k2][unique_fifty])
 
+
 binned_sequence_counts.sort(reverse = True)
-total_number_of_sequences_taken_into_account = input.pos - number_of_sequences_that_were_shorter_than_50
+total_number_of_sequences_taken_into_account = input_fasta.pos - number_of_sequences_that_were_shorter_than_50
 maximum_number_of_sequence_in_one_bin = max(binned_sequence_counts)
 number_of_bins_with_only_one_sequence = len([t for t in binned_sequence_counts if t == 1])
 number_of_bins_with_twenty_or_more_sequences = len([t for t in binned_sequence_counts if t >= 20])
@@ -75,7 +74,7 @@ number_of_bins_with_twenty_or_more_sequences = len([t for t in binned_sequence_c
 sys.stderr.write('\nDone.\n\nResults:\n')
 
 
-print 'Number of sequences processed                   : ', pp(input.pos)
+print 'Number of sequences processed                   : ', pp(input_fasta.pos)
 print 'Number of sequences that were shorter than 50   : ', pp(number_of_sequences_that_were_shorter_than_50) 
 print 'Number of sequences that were taken into account: ', pp(total_number_of_sequences_taken_into_account)
 print 'Number of bins based on first 50 bases          : ', pp(len(binned_sequence_counts))
